@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <h2>Total palabras: {{ results.length }}</h2> -->
+    <h4>Total de palabras: {{ items.length }}</h4>
 
     <!-- <button @click="orderByCategory()">Ordenar alfabéticamente</button>
     <button @click="toggleButtonGroupByCategory()">
@@ -9,7 +9,6 @@
 
     <main>
       <section class="card__group">
-        <!-- TODO: It will render only a component -->
         <WordCard v-for="word in items" :sentence="word" :key="word.id" />
       </section>
       <!-- <section class="card" v-else>
@@ -21,10 +20,6 @@
 
 <script>
 import WordCard from "./WordCard";
-
-//
-// Vuex
-// import { mapState } from "vuex";
 
 export default {
   data() {
@@ -46,6 +41,7 @@ export default {
   },
 
   created() {
+    //
     // Change to lowerCase
     this.items = this.$store.getters.toLowerCase(
       this.$store.state.common.words

@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <div class="card__loading" v-if="status === 'pending'">
-      <h3 class="loading__title">Loading...</h3>
+      <h3 class="loading__title">Cargando...</h3>
     </div>
     <!-- else -->
     <div
@@ -9,13 +9,14 @@
       v-else
     >
       <input
+        class="inputWord"
         type="text"
         name="inputWord"
-        id="inputWord"
         v-model="localSentence"
         v-if="ui.input.editing"
-        @key.enter="loadData()"
+        @keyup.enter="loadData(localSentence)"
       />
+
       <div v-if="status === 'success'">
         <h3 class="success__title">
           <strong>Palabra:</strong> {{ localSentence }}
@@ -34,7 +35,7 @@
           <p>
             <strong>Error searching word: "{{ localSentence }}"</strong>
           </p>
-          <p>{{ response.error.message }}</p>
+          <p>{{ error.message }}</p>
 
           <refs :references="references" />
         </div>
@@ -44,7 +45,7 @@
         <button class="button--secondary" @click="toggleEditing()">
           {{ ui.button.message }}
         </button>
-        <button class="button--primary" @click="loadData()">
+        <button class="button--primary" @click="loadData(localSentence)">
           Volver a intentar
         </button>
       </div>
@@ -61,20 +62,17 @@ export default {
   components: { Refs },
 
   created() {
-    this.loadData(this.sentence);
+    //
+    // Avoid mutating prop
+    this.localSentence = this.sentence;
+    //
+    this.loadData(this.localSentence);
   },
 
   computed: {
-    //
-    // Error aquí
-    localSentence: {
-      get: () => this.sentence,
-      set: val => (this.sentence = val)
-    },
-
     references() {
       return [
-        this.$store.state.scrapping.endpoints.wordreference + this.sentence
+        this.$store.state.scrapping.endpoints.wordreference + this.localSentence
       ];
     }
   },
@@ -83,6 +81,9 @@ export default {
     return {
       // status => pending, success, error
       status: "pending",
+      //
+      // New Sentence
+      localSentence: "",
       //
       // UI
       ui: {
@@ -95,10 +96,10 @@ export default {
       },
       //
       // Response from the server
-      response: {
-        error: {
-          message: ""
-        }
+      response: null,
+
+      error: {
+        message: ""
       }
     };
   },
@@ -114,12 +115,13 @@ export default {
   methods: {
     async loadData(sentence) {
       this.status = "pending";
+      this.response = null;
 
       const html = await this.$store.dispatch("getDefinition", sentence);
 
       if (html.error) {
         this.status = "error";
-        this.response = html;
+        this.error.message = `Ha ocurrido un error al buscar: ${sentence}`;
         return;
       }
 
@@ -129,7 +131,7 @@ export default {
       // Verify response has data
       if (data.category == "") {
         this.status = "error";
-        this.response.error.message = `No se ha encontrado nunguna traducción para: ${sentence}`;
+        this.error.message = `No se ha encontrado nunguna traducción para: ${sentence}`;
         return;
       }
 
@@ -201,7 +203,7 @@ export default {
   }
 }
 
-#inputWord {
+.inputWord {
   padding: 15px;
   border: 1px solid skyblue;
   font-size: 1.5em;

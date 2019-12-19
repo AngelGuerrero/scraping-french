@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Inicio</router-link> |
-      <router-link to="/about">Buscar</router-link>
-    </div>
-    <main>
+    <Nav />
+    <main class="container">
       <section class="main__section">
         <h1>Analizador de texto</h1>
       </section>
@@ -13,24 +10,17 @@
   </div>
 </template>
 
+<script>
+import Nav from "@/components/Shared/Nav";
+
+export default {
+  name: "App",
+
+  components: { Nav }
+};
+</script>
 <style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+//
+// GLOBAL STYLES
+@import "@/assets/scss/base.scss";
 </style>

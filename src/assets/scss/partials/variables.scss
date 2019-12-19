@@ -1,0 +1,58 @@
+// $body-background-color-light: #f1f3f5;
+
+$wrapper-header-background-color: #54426b;
+
+$main-aside-right-background-color: #3c3741;
+
+$todos-background-color: rgba(140, 118, 182, 0.644);
+
+$border-color: #c1c1c1;
+
+// $text-color: #707070;
+
+//
+// Dark colors
+//
+
+$success-color: darken(
+  $color: #42b983,
+  $amount: 20
+);
+$warning-color: #4522e6d1;
+$error-color: #e71d36;
+// $primary-color: #2ec4b6;
+$primary-color: $success-color;
+$secondary-color: #2d4bc3;
+
+$body-background-color-light: #0b132b;
+$text-color: #fdfffc;
+$link-color: aqua;
+
+//
+// Components
+//
+// World Card
+$card-dark-bg: #171622;
+$card-dark-bg-loading: $warning-color;
+$card-dark-bg-error: $error-color;
+
+// Navbar sizes
+$navbar-height: 70px;
+$navbar-padding: 5px;
+$navbar-total-height: $navbar-height + ($navbar-padding * 2);
+$navbar-links-color: #15b48f;
+
+// Asides
+// Left
+$aside-left-width: 30%;
+$aside-left-min-w: 280px;
+// Right
+$aside-right-width: 30%;
+$aside-right-min-w: 300px;
+
+// Main
+$main-content-width: 30%;
+$main-content-min-w: 300px;
+
+// Footer
+$footer-padding: 2px;

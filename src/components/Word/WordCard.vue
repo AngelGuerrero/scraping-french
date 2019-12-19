@@ -1,92 +1,83 @@
-<template>
-  <div class="root">
-    <div class="card__loading" v-if="status === 'pending'">
-      <h3 class="loading__title">Cargando...</h3>
-    </div>
-    <!-- else -->
-    <div
-      :class="[status === 'success' ? 'card__success' : 'card__error']"
-      v-else
-    >
-      <input
-        class="inputWord"
-        type="text"
-        name="inputWord"
-        v-model="localSentence"
-        v-if="ui.input.editing"
-        @keyup.enter="loadData(localSentence)"
-      />
+<template lang="pug">
+  .root
+    .card__loading(v-if="status === 'pending'")
+      h3.loading__title Cargando...
+    //- v-else
+    div(:class="[status === 'success' ? 'card__success' : 'card__error']" v-else)
+      //- Header of the card
+      input(class="inputWord"
+            type="text"
+            v-model="sentence"
+            v-if="control.input.editing"
+            @keyup.enter="loadData(sentence)")
+      
+      //- Main content of the card
+      div(v-if="status === 'success'")
+        h3.success__title Palabra: {{ sentence }}
+        div
+          p
+            strong Tipo:
+            |  {{ response.category }}
+          p
+            strong Definición de categoría:
+            |  {{ response.category_def }}
+          p
+            strong Exemple:
+            |  {{ response.sentences[0] }}
+          p
+            strong Ejemplo:
+            |  {{ response.sentences[1] }}
+        refs(:references="getReferences")
+      div.card__error(v-else)
+        h3.error__title Something went wrong!
+        .error__content
+          p
+            strong Error searching word: "{{ sentence }}"
+          p {{ error.message }}
+          refs(:references="getReferences")
 
-      <div v-if="status === 'success'">
-        <h3 class="success__title">
-          <strong>Palabra:</strong> {{ localSentence }}
-        </h3>
-        <p><strong>Tipo:</strong> {{ response.category }}</p>
-        <p><strong>Categoría:</strong> {{ response.category_def }}</p>
-        <p><strong>Exemple:</strong> {{ response.sentences[0] }}</p>
-        <p><strong>Ejemplo:</strong> {{ response.sentences[1] }}</p>
+      //- Footer of the card
+      .card__buttons
+        button.button--warning(@click="toggleEditing()") {{ control.button.message }}
+        button.button--primary(@click="loadData(sentence)") Volver a intentar
 
-        <refs :references="references" />
-      </div>
-      <!-- else -->
-      <div class="card__error" v-else>
-        <h3 class="error__title">Something went wrong!</h3>
-        <div class="error__content">
-          <p>
-            <strong>Error searching word: "{{ localSentence }}"</strong>
-          </p>
-          <p>{{ error.message }}</p>
-
-          <refs :references="references" />
-        </div>
-      </div>
-
-      <div class="card__buttons">
-        <button class="button--secondary" @click="toggleEditing()">
-          {{ ui.button.message }}
-        </button>
-        <button class="button--primary" @click="loadData(localSentence)">
-          Volver a intentar
-        </button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import Refs from "./Refs";
 
 export default {
-  props: ["sentence"],
+  props: {
+    ppSentence: {
+      type: String,
+      require: true
+    }
+  },
 
   components: { Refs },
 
-  created() {
-    //
-    // Avoid mutating prop
-    this.localSentence = this.sentence;
-    //
-    this.loadData(this.localSentence);
+  mounted() {
+    this.loadData(this.sentence);
   },
 
   computed: {
-    references() {
+    getReferences() {
       return [
-        this.$store.state.scrapping.endpoints.wordreference + this.localSentence
+        this.$store.state.scrapping.endpoints.wordreference + this.sentence
       ];
     }
   },
 
   data() {
     return {
+      //
+      // Avoid mutating prop
+      sentence: this.ppSentence,
+
       // status => pending, success, error
       status: "pending",
-      //
-      // New Sentence
-      localSentence: "",
-      //
-      // UI
-      ui: {
+
+      control: {
         input: {
           editing: false
         },
@@ -94,7 +85,7 @@ export default {
           message: "Modificar palabra"
         }
       },
-      //
+
       // Response from the server
       response: null,
 
@@ -105,23 +96,22 @@ export default {
   },
 
   watch: {
-    "ui.input.editing": function(val) {
-      this.ui.button.message = val
+    "control.input.editing": function(val) {
+      this.control.button.message = val
         ? "Cerrar cuadro de edición"
         : "Modificar palabra";
     }
   },
 
   methods: {
-    async loadData(sentence) {
-      this.status = "pending";
-      this.response = null;
+    async loadData(pSentence) {
+      this.restoreStateComponent(pSentence);
 
-      const html = await this.$store.dispatch("getDefinition", sentence);
+      const html = await this.$store.dispatch("getDefinition", pSentence);
 
       if (html.error) {
         this.status = "error";
-        this.error.message = `Ha ocurrido un error al buscar: ${sentence}`;
+        this.error.message = `Ha ocurrido un error al buscar: ${pSentence}`;
         return;
       }
 
@@ -131,7 +121,7 @@ export default {
       // Verify response has data
       if (data.category == "") {
         this.status = "error";
-        this.error.message = `No se ha encontrado nunguna traducción para: ${sentence}`;
+        this.error.message = `No se pudo obtener traducción para: ${pSentence}`;
         return;
       }
 
@@ -140,13 +130,22 @@ export default {
     },
 
     toggleEditing() {
-      this.ui.input.editing = !this.ui.input.editing;
+      this.control.input.editing = !this.control.input.editing;
+    },
+
+    restoreStateComponent(pSentence) {
+      this.sentence = pSentence;
+      this.status = "pending";
+      this.response = null;
+      this.control.input.editing = false;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import "@/assets/scss/partials/variables.scss";
+
 .card {
   padding: 5px;
   margin: 10px 0;
@@ -159,7 +158,7 @@ export default {
 .card {
   &__success {
     @extend .card;
-    background-color: #b5f7d9;
+    background-color: $card-dark-bg;
 
     .success__title {
       font-size: 1.5em;
@@ -168,13 +167,13 @@ export default {
 
   &__loading {
     @extend .card;
-    background-color: rgb(250, 250, 152);
+    background-color: $card-dark-bg-loading;
   }
 
   &__error {
     @extend .card;
-    background-color: rgb(255, 214, 206);
-    color: rgb(247, 77, 47);
+    background-color: $card-dark-bg-error;
+    color: $text-color;
 
     .error__title {
       font-size: 1.5em;
@@ -185,22 +184,6 @@ export default {
 .card__buttons {
   display: flex;
   justify-content: space-between;
-
-  .btn {
-    padding: 10px;
-    border: none;
-  }
-
-  .button--primary {
-    @extend .btn;
-    background-color: #4758f0;
-    color: white;
-  }
-  .button--secondary {
-    @extend .btn;
-    background-color: rgb(102, 72, 141);
-    color: white;
-  }
 }
 
 .inputWord {

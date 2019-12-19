@@ -18,7 +18,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import "@/assets/scss/partials/variables.scss";
+
 .references {
   display: block;
   padding: 10px 0;
@@ -30,11 +32,12 @@ export default {
   }
 
   .references__link {
+    color: $link-color;
     &:visited {
-      color: rgb(12, 21, 143);
+      color: lighten($color: $link-color, $amount: 10);
     }
     &:hover {
-      color: red;
+      color: lighten($color: $link-color, $amount: 40);
     }
   }
 }

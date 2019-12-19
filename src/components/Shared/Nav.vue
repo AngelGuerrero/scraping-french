@@ -1,8 +1,6 @@
 <template lang="pug">
     #nav
-        router-link(to="/") Inicio
-        router-link(to="/about") Buscar
-        router-link(to="/input") Ingresar texto
+        router-link(to="/") Analizar texto
 </template>
 
 <style lang="scss" scoped>

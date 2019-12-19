@@ -1,0 +1,121 @@
+@import "@/assets/scss/partials/variables.scss";
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $body-background-color-light;
+  color: $text-color;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.a {
+  color: $link-color;
+}
+
+.btn-large {
+  width: 100%;
+}
+
+.container {
+  padding: 15px;
+  margin: 5px 0px;
+}
+
+// Flex system
+%flex-container {
+  display: flex;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.row-v-center {
+  @extend .row;
+  align-items: center;
+}
+
+.row-h-center {
+  @extend .row;
+  justify-content: center;
+}
+
+.column {
+  @extend %flex-container;
+  flex-direction: column;
+}
+
+.column-v-center {
+  justify-content: center;
+}
+
+.column-h-center {
+  align-items: center;
+}
+
+.around {
+  justify-content: space-around;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.start {
+  justify-content: flex-start;
+}
+
+.end {
+  justify-content: flex-end;
+}
+
+// Flex grow from 1 to 12, children
+@for $v from 1 to 12 {
+  .grow-#{$v} {
+    flex-grow: #{$v};
+  }
+}
+
+// Color headers
+@for $v from 1 to 6 {
+  h#{$v} {
+    color: $text-color;
+  }
+}
+
+@mixin darkButtonColor($backgroundColor, $color) {
+  background-color: $backgroundColor;
+  color: $color;
+
+  &:hover {
+    cursor: pointer;
+    background-color: darken($color: $backgroundColor, $amount: 10);
+  }
+}
+
+.btn {
+  padding: 10px;
+  margin: 7px 0px;
+  border: none;
+  outline: none;
+}
+
+.button--primary {
+  @extend .btn;
+  @include darkButtonColor($primary-color, white);
+}
+.button--secondary {
+  @extend .btn;
+  @include darkButtonColor($secondary-color, white);
+}
+.button--warning {
+  @extend .btn;
+  @include darkButtonColor($warning-color, white);
+}
+.button--error {
+  @extend .btn;
+  @include darkButtonColor($error-color, white);
+}

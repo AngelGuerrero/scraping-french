@@ -96,26 +96,53 @@ body {
   }
 }
 
+$btn-padding-sides: 10px;
+
 .btn {
-  padding: 10px;
+  padding: $btn-padding-sides;
   margin: 7px 0px;
   border: none;
   outline: none;
+  display: flex;
+  justify-content: space-between;
 }
 
 .button--primary {
   @extend .btn;
   @include darkButtonColor($primary-color, white);
 }
+
 .button--secondary {
   @extend .btn;
   @include darkButtonColor($secondary-color, white);
 }
+
 .button--warning {
   @extend .btn;
   @include darkButtonColor($warning-color, white);
 }
+
 .button--error {
   @extend .btn;
   @include darkButtonColor($error-color, white);
+}
+
+@mixin evaluateIconButtonMargins($side) {
+  @if ($side=="left") {
+    margin-left: 0;
+    margin-right: $btn-padding-sides;
+  }
+
+  @else if ($side=='right') {
+    margin-left: $btn-padding-sides;
+    margin-right: 0;
+  }
+}
+
+.btn__icon--left {
+  @include evaluateIconButtonMargins("left");
+}
+
+.btn__icon--right {
+  @include evaluateIconButtonMargins("right");
 }

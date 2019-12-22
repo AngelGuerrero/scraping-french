@@ -1,23 +1,26 @@
 <template lang="pug">
-    div
-        button.btn.button--primary(@click="analyze()") Analizar
+  div
+    button.btn.button--primary(@click="analyze()") 
+      | Analizar
+      icon.btn__icon--right(name="envelope")
 
-        input(id="textarea"
-              type="textarea" 
-              placeholder="Ingresa el texto a analizar" 
-              v-model="input.text" 
-              @keyup.enter="analyze()")
+    input(id="textarea"
+      type="textarea" 
+      placeholder="Ingresa el texto a analizar" 
+      v-model="input.text" 
+      @keyup.enter="analyze()")
 
-        //- The component must be mounted, that's why v-show
-        List(ref="list" :ppList="words" v-show="words")
+    //- The component must be mounted, that's why v-show
+    List(ref="list" :ppList="words" v-show="words")
 
 </template>
 
 <script>
+import Icon from "vue-awesome/components/Icon";
 import List from "@/components/Word/List";
 
 export default {
-  components: { List },
+  components: { List, Icon },
 
   data() {
     return {
@@ -55,22 +58,20 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="sass" scoped>
 #textarea,
-textarea {
-  display: block;
-  outline: none;
-  width: 100%;
-  font-size: 1.3em;
-  border: solid 3px transparent;
-  border-radius: 6px;
-  padding: 10px;
-  transition: border 0.5s;
-  box-sizing: border-box;
+textarea
+  display: block
+  outline: none
+  width: 100%
+  font-size: 1.3em
+  border: solid 3px transparent
+  border-radius: 6px
+  padding: 10px
+  transition: border 0.5s
+  box-sizing: border-box
 
   &:focus,
-  textarea:focus {
-    border: solid 3px rgb(97, 189, 212);
-  }
-}
+  textarea:focus
+    border: solid 3px rgb(97, 189, 212)
 </style>
